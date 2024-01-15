@@ -55,25 +55,35 @@ return res.status(200).send("User successfully logged in");
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
-  let review = req.body.review;
-  let isbnReceived = req.params.isbn;
-  let reviewer = req.session.authorization['username'];
-  let selectedBooks = books[isbn];
-  if(!isbn) {
-    return res.status(403).send("Invalid isbn entered")
+  const isbn = req.params.isbn;
+  let selected_book = books[isbn]
+  if (selected_book) {
+      let review = req.query.review;
+      let reviewer = req.session.authorization['username'];
+      if(review) {
+          selected_book['reviews'][reviewer] = review;
+          books[isbn] = selected_book;
+      }
+      res.send(`The review for the book with ISBN  ${isbn} has been added/updated.`);
   }
-  if(selectedBooks) {
-    if(review) {
-         selectedBooks['review'][reviewer] = review;
-    books[isbn] = selectedBooks;
-    }
-   else {
-    res.send("Review is empty!")
-   }
-   res.send(`The review for book with isbn ${isbnReceived} is added/changed.`)
+  else{
+      res.send("Unable to find this ISBN!");
   }
-  res.send("isbn is not defined for book")
   //return res.status(300).json({message: "Yet to be implemented"});
+});
+
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const isbnRequest = req.params.isbn;
+    let reviewer = req.session.authorization['username'];
+    let selected_review = books[isbnRequest]["reviews"];
+    if (selected_review[reviewer]){
+        delete selected_review[reviewer];
+        res.send(`Reviews for the ISBN  ${isbnRequest} posted by the user ${reviewer} deleted.`);
+    }
+    else{
+        res.send("Can't delete, as this review has been posted by a different user");
+    }
+
 });
 
 module.exports.authenticated = regd_users;
