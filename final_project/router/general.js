@@ -74,7 +74,6 @@ public_users.get('/review/:isbn',function (req, res) {
   return res.status(300).send(books[isbnQuery]["reviews"]);
 });
 
-
 // TASK 10 - Get the book list available in the shop using Promises
 public_users.get('/books',function (req, res) {
 
@@ -98,6 +97,18 @@ public_users.get('/books',function (req, res) {
 
   //Task 12
   public_users.get('/author/:author', function(res,req){
-    
+    const get_books_author = new Promise((resolve,reject)=>{
+        let newAuthorList = [];
+        let isbnNew = Object.keys(books);
+        isbnNew.forEach((isbn) => {
+          if(books[isbnNew]["author"]=== req.params.author){
+              newAuthorList.push({"isbn":isbn,
+              "title":books[isbnNew]["title"],
+              "reviews":books[isbnNew]["reviews"]}) 
+          } 
+        })
+    })
+
   })
+
 module.exports.general = public_users;
