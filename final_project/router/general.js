@@ -74,4 +74,30 @@ public_users.get('/review/:isbn',function (req, res) {
   return res.status(300).send(books[isbnQuery]["reviews"]);
 });
 
+
+// TASK 10 - Get the book list available in the shop using Promises
+public_users.get('/books',function (req, res) {
+
+    const get_books = new Promise((resolve, reject) => {
+        resolve(res.send(JSON.stringify({books}, null, 4)));
+      });
+
+      get_books.then(() => console.log("Promise for Task 10 resolved"));
+
+  });
+
+  //Task 11
+  public_users.get('/isbn/:isbn', function(res,req) {
+    let isbnSame = req.params.isbn;
+    const get_books = new Promise((resolve,reject) => {
+        resolve(res.status(300).send(books[isbnSame]));
+    });
+
+    get_books.then(() => console.log("Promise Task 11 executed!"))
+  });
+
+  //Task 12
+  public_users.get('/author/:author', function(res,req){
+    
+  })
 module.exports.general = public_users;
