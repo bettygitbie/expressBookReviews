@@ -96,7 +96,7 @@ public_users.get('/books',function (req, res) {
   });
 
   //Task 12
-  public_users.get('/author/:author', function(res,req){
+  public_users.get('/books/author/:author', function(res,req){
     const get_books_author = new Promise((resolve,reject)=>{
         let newAuthorList = [];
         let isbnNew = Object.keys(books);
@@ -104,11 +104,34 @@ public_users.get('/books',function (req, res) {
           if(books[isbnNew]["author"]=== req.params.author){
               newAuthorList.push({"isbn":isbn,
               "title":books[isbnNew]["title"],
-              "reviews":books[isbnNew]["reviews"]}) 
+              "reviews":books[isbnNew]["reviews"]})
+              resolve(res.send(JSON.stringify({newAuthorList}, null, 4))); 
           } 
-        })
+        });
+        reject(res.send("The mentioned author does not exist "))
     })
 
   })
+
+  //Task 13
+  public_users.get('/books/title/:title', function(res,req){
+    const getBooksTitle = new Promise((resolve,reject) =>{
+        let booksByTitle = [];
+        let isbns = Object.keys(books);
+        isbns.forEach((isbn) => {
+          if(books[isbn]["title"]=== req.params.title){
+              booksByTitle.push({"isbn":isbn,
+                  "author":books[isbn]["author"],
+                  "reviews":books[isbn]["reviews"]})
+                  resolve(res.status(300).send(JSON.stringify({booksByTitle},null,4)));
+          }
+        });
+        reject(res.send("The mentioned title does not exist "))
+        
+      
+    })
+   
+  })
+
 
 module.exports.general = public_users;
